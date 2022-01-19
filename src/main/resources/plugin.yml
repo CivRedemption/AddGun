@@ -1,0 +1,94 @@
+name: AddGun
+version: ${project.version}
+author: ProgrammerDan
+main: com.programmerdan.minecraft.addgun.AddGun
+website: http://www.devotedmc.com
+description: Adds guns to Minecraft. Fully configurable.
+softdepend: [DevotedPvP, CombatTagPlus]
+api-version: 1.18
+commands:
+ addgunhelp:
+  description: Shows the commands useable for this plugin
+  usage: |
+   /giveselfgun <gun>
+   /giveselfbullet <bullet> [<amount>]
+   /giveselfmagazine <magazine>
+   /repairselfgun
+  aliases: gunhelp
+  permission: addgun.self
+ addgun:
+  description: Shows the commands useable for this plugin
+  usage: |
+   The following are commands available for use:
+   /givegun <player> <gun>
+   /givebullet <player> <bullet> [<amount>]
+   /givemagazine <player> <magazine>
+   /repairgun <player>
+  aliases: agun
+  permission: addgun.*
+ givegun:
+  description: Gives player a weapon.
+  usage: |
+   /<command> <player> <gun>
+  aliases: ag.give
+  permission: addgun.give
+ givebullet:
+  description: Gives player a bullet for a weapon.
+  usage: |
+   /<command> <player> <bullet> <amount>
+  aliases: ag.gb
+  permission: addgun.give
+ givemagazine:
+  description: Gives player a magazine for a weapon
+  usage: | 
+   /<command> <player> <magazine>
+  aliases: ag.gc
+  permission: addgun.give
+ repairgun:
+  description: Repairs a player's held gun
+  usage: |
+   /<command> <player>
+  aliases: ag.rg
+  permission: addgun.repair
+ giveselfgun:
+  description: Give yourself a gun.
+  usage: |
+   /<command> <gun>
+  aliases: gun
+  permission: addgun.self
+ giveselfbullet:
+  description: Give yourself bullets.
+  usage: |
+   /<command> <bullet>
+  aliases: bullet
+  permission: addgun.self
+ giveselfmagazine:
+  description: Give yourself ammo magazines.
+  usage: |
+   /<command> <magazine>
+  aliases: [gmagazine, magazine]
+  permission: addgun.self
+ repairselfgun:
+  description: Fix the gun you are holding.
+  usage:
+   /<command>
+  aliases: rgun
+  permission: addgun.self 
+permissions:
+ addgun.*:
+  description: Gives access to all Addgun commands
+  children:
+   addgun.give: true
+   addgun.self: true
+ addgun.give:
+  description: Allows gifting players specific weapons
+  default: op
+ addgun.repair:
+  description: Allows repairing a gun
+  default: op
+ addgun.data:
+  description: Allows insight into special data as weapons are used
+  default: op
+ addgun.self:
+  description: Allows use of self-facing controls
+  default: true

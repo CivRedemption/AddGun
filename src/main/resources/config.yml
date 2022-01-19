@@ -1,0 +1,493 @@
+debug: true
+global:
+ # Use this to define how guns that use XP, treat XP bottles.
+ xpPerBottle: 10
+ # Use these to determine if people can give themselves weapons
+ self:
+  # Each section supports "give" -- true/false, "limit" -- counting number, time -- in ms, and resetOnDeath -- true/false
+  gun: 
+   # Give decides if players can self give or not
+   give: true
+   # Limit determines how many guns a player can give themselves before a timeout is met. Timeout starts with first give.
+   limit: 2
+   # Timeout on limit, if any
+   time: 18000
+   # Reset timeout and limits on death
+   reset: true
+  magazine:
+   give: true
+  bullet:
+   give: true
+  repair:
+   give: false
+ kickback:
+  expand: 4 # how long the kickback's aim impact lasts beyond firing, in multiples of weapon cooldown.
+ accuracy:
+  # each gun has a difficulty to aim, that is its baseline miss -- sneaking and stillness reduce that (stabilize you).
+  sneaking: 0.025 # per tick % reduction to baseline impact
+  still: 0.05 # per tick % reduction
+  # movement makes it harder to aim, and these effects increase up to a stable point and do not incease past it, depending
+  # on mode of movement. The impacts do aggregate. 
+  walking:
+   base: 0.1 # max impact of walking on aim -- walking moves us towards this, not walking, away.
+   reduce: 0.00005 # per ms adjustment
+   increase: 0.0001 # per ms adjustment
+  running:
+   base: 0.4 # max impact of running on aim -- running moves us towards this, not running, away.
+   reduce: 0.0001 # per ms not running adjust
+   increase: 0.001 # per ms running adjust
+  gliding:
+   base: 0.7 # max impact of gliding on aim -- gliding moves us towards this, not gliding, away.
+   reduce: 0.0001 # per ms not gliding adjust
+   increase: 0.001 # per ms gliding adjust
+  crouch-reduce: 0.5 # % of above impacts to instantly reduce if player crouches
+  # The movement "hardness increase" is added to whatever fraction of baseline miss, which is added to the gun's "intrinsic" innaccuracy, and
+  # finally the active kickback summation is applied.
+  # This is then mapped to a random number, which controls the resulting hit tightness.
+ breakables: # These things can be directly damaged by gunfire. The value is ms between accepted hits, for blocks that have protection.
+  GLASS: 250 # This delay is entity-global -- so basically, no more hits are registered for that person until the cooldown is achieved.
+  THIN_GLASS: 250
+  BREWING_STAND: 250
+  CAKE_BLOCK: 50
+  CHEST: 250
+  ICE: 250
+  MELON_BLOCK: 50
+  PUMPKIN: 50
+  SNOW_BLOCK: 250
+  GLOWSTONE: 250
+bullets:
+ Lead Slug:
+  type: SNOWBALL
+  example:
+    ==: org.bukkit.inventory.ItemStack
+    type: IRON_NUGGET
+    amount: 1
+    meta:
+     ==: ItemMeta
+     meta-type: UNSPECIFIC
+     display-name: Lead Slug
+  # don't worry about lores, that'll be set by the platform.
+  misfireBlowoutChance: .15 #basic lead slug are NOT safe
+  xpPerShot: 0
+  missRadius: # these are augments, round shot is not easy to aim
+   max: 5
+   min: 2
+  knockback:
+   chance: 1.0
+   ignore-reduction: true
+   avg: 1.0
+   spread: 0.5
+  explosion:
+   chance: 0.0
+  incendiary:
+   chance: 0.0
+  # todo: scatter, knockback
+  reduction: # this is % reduction of damage a type confers, further enhanced by enchantments
+   base: 0.1
+   LEATHER: 0.01
+   GOLD: 0.01
+   CHAIN: 0.05
+   IRON: 0.1
+   DIAMOND: 0.3
+   IRON_BARDING: 0.1
+   GOLD_BARDING: 0.01
+   DIAMOND_BARDING: 0.3
+   # SHIELD isn't used, it has an internal deflection based on angle of hit
+   WINGS: -0.09
+  durability: # this is % of damage that gets applied to durability of the armor hit
+   base: 0.1
+   LEATHER: 0.1
+   GOLD: 0.2
+   CHAIN: 0.2
+   IRON: 0.1
+   DIAMOND: 0.05
+   IRON_BARDING: 0.1
+   GOLD_BARDING: 0.2
+   DIAMOND_BARDING: 0.05
+   SHIELD: 0.3
+   WINGS: 0.3
+  damage: # configure the damage by hitzone
+   avg: 10
+   spread: 2
+   BODY: # center of mass hit
+    avg: 0
+    spread: 0
+   LEGS: # legs hit
+    avg: -1
+    spread: -1
+   FEET: # feet hit
+    avg: -2
+    spread: -1
+   HEAD: # headshot!
+    avg: 2
+    spread: 0
+ Rifled Shell:
+  type: SNOWBALL
+  example:
+    ==: org.bukkit.inventory.ItemStack
+    type: GOLD_NUGGET
+    amount: 1
+    meta:
+     ==: ItemMeta
+     meta-type: UNSPECIFIC
+     display-name: Rifled Shell
+  misfireBlowoutChance: .05 #simple shells much safer
+  xpPerShot: 0
+  missRadius: # these are augments, shells, being rifled, are fairly consistent
+   max: 1
+   min: 0
+  knockback:
+   chance: 1.0
+   ignore-reduction: true
+   avg: 1.0
+   spread: 0.5
+  explosion:
+   chance: 0.0
+  incendiary:
+   chance: 0.0
+  # todo: scatter, knockback
+  reduction: # this is % reduction of damage a type confers, further enhanced by enchantments
+   base: 0.08
+   LEATHER: 0.01
+   GOLD: 0.01
+   CHAIN: 0.05
+   IRON: 0.07
+   DIAMOND: 0.1
+   IRON_BARDING: 0.07
+   GOLD_BARDING: 0.01
+   DIAMOND_BARDING: 0.1
+   WINGS: -0.09
+  durability: # this is % of damage that gets applied to durability of the armor hit
+   base: 0.1
+   LEATHER: 0.1
+   GOLD: 0.2
+   CHAIN: 0.2
+   IRON: 0.1
+   DIAMOND: 0.05
+   IRON_BARDING: 0.1
+   GOLD_BARDING: 0.2
+   DIAMOND_BARDING: 0.05
+   SHIELD: 0.5 # high velocity bullets shatter shields
+   WINGS: 0.3
+  damage: # configure the damage by hitzone
+   avg: 20
+   spread: 5
+   BODY: # center of mass hit
+    avg: 0
+    spread: 0
+   LEGS: # legs hit
+    avg: -1
+    spread: -1
+   FEET: # feet hit
+    avg: -2
+    spread: -1
+   HEAD: # headshot!
+    avg: 3
+    spread: 4
+ Mortar Shell:
+  type: SNOWBALL
+  example:
+    ==: org.bukkit.inventory.ItemStack
+    type: FIREWORK_CHARGE
+    amount: 1
+    meta:
+     ==: ItemMeta
+     meta-type: UNSPECIFIC
+     display-name: Mortar Shell
+  misfireBlowoutChance: .7 # this is a big explosive, if you misfire, it will explode in your face
+  xpPerShot: 0
+  missRadius: # unrifled mortars are generally not accurate
+   max: 20
+   min: 5
+  knockback:
+   chance: 1.0
+   ignore-reduction: true
+   avg: 1.5
+   spread: 0.5
+  explosion:
+   chance: 90.0
+   level: 2.0 # boom
+  incendiary:
+   chance: 0.1
+   ticks: 10.0 # might set you on fire?
+  # todo: scatter, knockback
+  reduction: # this is % reduction of damage a type confers, further enhanced by enchantments
+   base: 0.4
+   LEATHER: 0.2
+   GOLD: 0.1
+   CHAIN: 0.15
+   IRON: 0.3
+   DIAMOND: 0.4
+   IRON_BARDING: 0.3
+   GOLD_BARDING: 0.1
+   DIAMOND_BARDING: 0.4
+   WINGS: -0.3
+  durability: # this is % of damage that gets applied to durability of the armor hit
+   base: 0.4
+   LEATHER: 0.2
+   GOLD: 0.1
+   CHAIN: 0.15
+   IRON: 0.3
+   DIAMOND: 0.4
+   IRON_BARDING: 0.3
+   GOLD_BARDING: 0.1
+   DIAMOND_BARDING: 0.4
+   SHIELD: 0.5 # heavy mortars will break shields
+   WINGS: 0.4
+  damage: # configure the damage by hitzone
+   avg: 5 # most mortar damage is the explosion + fire
+   spread: 1
+   BODY: # center of mass hit
+    avg: -1
+    spread: 0
+   LEGS: # legs hit
+    avg: -1
+    spread: 0
+   FEET: # feet hit
+    avg: -2
+    spread: 0
+   HEAD: # headshot!
+    avg: 5
+    spread: 0
+magazines:
+ Pistol Magazine:
+  example:
+    ==: org.bukkit.inventory.ItemStack
+    type: END_ROD
+    amount: 1
+    meta:
+     ==: ItemMeta
+     meta-type: UNSPECIFIC
+     display-name: Pistol Magazine
+  bullets:
+   Rifled Shell: 12
+ Rifle Magazine:
+  example:
+    ==: org.bukkit.inventory.ItemStack
+    type: END_ROD
+    amount: 1
+    meta:
+     ==: ItemMeta
+     meta-type: UNSPECIFIC
+     display-name: Rifle Magazine
+  bullets:
+   Rifled Shell: 32
+guns:
+ #RailGun:
+ # maxVelocity: 1000
+ ## Velocity is in blocks per tick
+ # cooldown: 15000
+ ## Cooldown is in MS (1000 = 1 second)
+ # maxUses: 50
+ ## maximum uses for this gun (until it breaks down)
+ # minUses: 5
+ ## level at which to prevent further use (set to 0 to allow it to be destroyed by use)
+ # damage: 1000.0
+ ## hearts of damage to cause from the bullet each hit
+ # passthrough: 10
+ ## number of entities it can damage in a row
+ # missRadius: 45
+ ## Jitter angular miss (in degrees) that is randomly applied on firing, in pitch and yaw
+ # blunt: 3.0
+ ## hearts of damage to cause from smacking someone over the head with the gun
+ # xpPerShot: 120
+ ## XP to take from inventory or player's XP bar to actually launch a projectile
+ Bolt-action Rifle:
+  example:
+    ==: org.bukkit.inventory.ItemStack
+    type: IRON_HOE
+    amount: 1
+    meta:
+     ==: ItemMeta
+     meta-type: UNSPECIFIC
+     display-name: Bolt-action Rifle  
+  ammo:
+   xp: 0
+   max: 1
+   bullets:
+   - Lead Slug
+   - Rifled Shell
+  health:
+   max: 150
+   misfire:
+    inflection: 10
+    spread: 20
+    blowout:
+     chance: 0.1
+     strength: 1.5
+  speed: # in meters per tick (20 ticks in a second)
+   min: 20
+   max: 30
+  damage:
+   blunt: 2 #smack nerds over the head
+  miss:
+   radius:
+    max: 30
+    min: 0
+   innate: 0.075
+   base: 0.05
+   kickback: 10 # angular kick post shot
+   aim: 0.4 # per shot disconnect
+  cooldown:
+   milliseconds: 2000
+   equip: false
+  limits:
+   onlyOne: false
+ Revolver:
+  example:
+    ==: org.bukkit.inventory.ItemStack
+    type: BLAZE_ROD
+    amount: 1
+    meta:
+     ==: ItemMeta
+     meta-type: UNSPECIFIC
+     display-name: Revolver  
+  ammo:
+   xp: 0
+   max: 6
+   bullets:
+   - Lead Slug
+  health:
+   max: 500
+   misfire:
+    inflection: 50
+    spread: 30
+    blowout:
+     chance: 0.01
+     strength: 0.5
+  speed: # in meters per tick (20 ticks in a second)
+   min: 10
+   max: 20
+  damage:
+   blunt: 1 #smack nerds over the head
+  miss:
+   radius:
+    max: 40
+    min: 2
+   innate: 0.05
+   base: 0.03
+   kickback: 5 # angular kick post shot
+   aim: 0.2 # per shot disconnect
+  cooldown:
+   milliseconds: 250
+   equip: false
+  limits:
+   onlyOne: false
+ Pistol:
+  example:
+    ==: org.bukkit.inventory.ItemStack
+    type: BLAZE_ROD
+    amount: 1
+    meta:
+     ==: ItemMeta
+     meta-type: UNSPECIFIC
+     display-name: Pistol  
+  ammo:
+   xp: 0
+   magazines:
+   - Pistol Magazine
+  health:
+   max: 1000
+   misfire:
+    inflection: 200
+    spread: 10
+    blowout:
+     chance: 0.02
+     strength: 1.0
+  speed: # in meters per tick (20 ticks in a second)
+   min: 15
+   max: 25
+  damage:
+   blunt: 1 #smack nerds over the head
+  miss:
+   radius:
+    max: 25
+    min: 1
+   innate: 0.005
+   base: 0.024
+   kickback: 4 # angular kick post shot
+   aim: 0.1 # per shot disconnect
+  cooldown:
+   milliseconds: 100
+   equip: false
+  limits:
+   onlyOne: false
+ AK-47:
+  example:
+    ==: org.bukkit.inventory.ItemStack
+    type: WOOD_HOE
+    amount: 1
+    meta:
+     ==: ItemMeta
+     meta-type: UNSPECIFIC
+     display-name: AK-47
+  ammo:
+   xp: 0
+   magazines:
+   - Rifle Magazine
+  health:
+   max: 500
+   misfire:
+    inflection: 250 # just like IRL, ak-47 is waitin' to blow
+    spread: 20
+    blowout:
+     chance: 0.03
+     strength: 1.0
+  speed: # in meters per tick (20 ticks in a second)
+   min: 20
+   max: 25
+  damage:
+   blunt: 1 #smack nerds over the head
+  miss:
+   radius:
+    max: 20
+    min: 5 # be close if you want to hit anything
+   innate: 0.001
+   base: 0.05
+   kickback: 10 # angular kick post shot
+   aim: 0.15 # per shot disconnect
+  cooldown:
+   milliseconds: 200
+   equip: false
+  limits:
+   onlyOne: false
+ Mortar:
+  example:
+    ==: org.bukkit.inventory.ItemStack
+    type: LEVER
+    amount: 1
+    meta:
+     ==: ItemMeta
+     meta-type: UNSPECIFIC
+     display-name: Mortar
+  ammo:
+   xp: 0
+   max: 1
+   bullets:
+   - Mortar Shell
+  health:
+   max: 50
+   misfire:
+    inflection: 5 # not a whole lot of shots
+    spread: 2
+    blowout:
+     chance: 0.25
+     strength: 1.0
+  speed: # in meters per tick (20 ticks in a second)
+   min: 1
+   max: 1.5
+  damage:
+   blunt: 5 #smack nerds over the head
+  miss:
+   radius:
+    max: 30
+    min: 15 # just not that accurate
+   innate: 0.02
+   base: 0.1
+   kickback: 25 # angular kick post shot
+   aim: 0.4 # per shot disconnect
+  cooldown:
+   milliseconds: 5000
+   equip: true
+  limits:
+   onlyOne: true

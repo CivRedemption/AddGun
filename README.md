@@ -1,11 +1,56 @@
-# paperweight-test-plugin
+### Add Gun
+-------------
 
-jmp's test plugin for [`paperweight-userdev`](https://github.com/PaperMC/paperweight/tree/main/paperweight-userdev) development
+People keep telling me to "Add Gun". So fine, I'm adding it.
 
-(also serves as an example until more thorough documentation is created)
+## The Basics
+--------------
 
-### note
+If you enable them in config, players can get guns using the following simple commands:
 
-- `build.gradle.kts` and `settings.gradle.kts` both contain important configuration.
-- `paperweight-userdev` automatically detects shadow and will use `shadowJar` as input for `reobfJar`. This means no extra configuration is required to use `paperweight-userdev` with shadow. See the `shadow` branch on this repository for an exmaple usage of shadow with `paperweight-userdev`.
-- The `plugin-yml` and `run-paper` Gradle plugins are both optional, however I use them in almost all my plugin projects and recommend at least trying them out. `plugin-yml` auto-generates your plugin.yml file from configuration in the build file, and `run-paper` allows for launching a test server with your plugin through the `runServer` and `runMojangMappedServer` tasks.
+**/gun** -- presents a menu with all configured guns
+
+**/magazine** -- some guns aren't loaded directly, but via "magazines" of bullets, this command brings up a menu to pick 'em
+
+**/bullet** -- guns need bullets to fire, brings up a menu showing all configured bullets.
+
+### Loading
+-----------
+
+To load bullets into guns or magazines, pick up the bullets. While holding them, right click the magazine, or gun, as indicated.
+
+Pay attention to the lore on the gun / magazine -- it'll tell you if it can hold the bullets you've picked up or not.
+
+To load magazines into guns, pick up the magazine, and right click the gun. If a magazine is already loaded, it will be swapped out with the one you are holding.
+
+If you've "locked" a magazine to a particular bullet type, but the magazine is now empty, right click the magazine with nothing in your hand, to "free it" for other
+kinds of bullets.
+
+### Repair
+---------
+
+Guns wear out, and will begin to misfire more often (potentially explosively!) as they are used. If enabled, type **/rgun** while holding the gun, to
+fully repair it.
+
+### Misfire
+-----------
+
+Some guns wear out quickly, others won't -- this depends on their health, and the "curve" settings for misfire chances (inflection and smoothness).
+
+Pay attention to the gun, there will be a message in the lore indicating if the gun is wearing out. Some guns are just unreliable, and will come out
+of the factory with some "wear" visible.
+
+### Aiming
+----------
+
+Note: this section subject to change.
+
+To aim any gun, a combination of stillness and crouching is necessary. This is to emulate " lining up your shot " in real life. If you don't take the
+time to line up your shot, you'll likely miss your target -- often by a lot. Some guns have a nasty kick to them. Others are generally easily aimed. Again,
+this is all controlled by configuration... In any case, crouch, to see a visual indicator of the quality of your aim. Wait for it to go green before shooting,
+for best results.
+
+### Damage
+----------
+
+All damage is fully custom and configurable. I'll explain more about that later.
